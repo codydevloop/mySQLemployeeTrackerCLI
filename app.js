@@ -1,9 +1,68 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql");
-const cTable = require("console.table");
+// const mysql = require("mysql");
+// const cTable = require("console.table");
 const connection = require("./db/connection");
+const FUNCTIONS = require("./db/dbqueries");
+const mainApp = require("./app");
 
-// let connection;
+// console.log(`Calling the exported function..the result ${FUNCTIONS.sendDataToDB()}`);
+// FUNCTIONS.readEmployees();
+
+// FUNCTIONS.readEmployees(connection);  //figuring out i needed to pass the connection was tricky
+
+
+//==========================
+// Initial Greeting - inquire choices
+//==========================
+exports.mainMenu= function(){
+
+    inquirer.prompt([
+        {
+        type: "list",
+        message: "What would you like to do?",
+        name: "homeChoice",
+        choices: [
+            "View Employees",
+            "View Roles",
+            "View Departments"
+        ]
+        }
+    ]).then(function(userResponse){
+        // console.log(userResponse);
+        userChoice(userResponse);
+        // connectToDatabase();
+    });
+};
+
+
+
+
+//==========================
+// Switch options for Initial Greeting
+//==========================
+const userChoice = function(userResponse){
+    switch(userResponse.homeChoice){
+        case "View Employees": 
+        FUNCTIONS.readEmployees(connection);
+        break;
+
+        case "View Roles": 
+        FUNCTIONS.readRoles(connection);
+        break;
+
+        case "View Departments": 
+        FUNCTIONS.readDepartments(connection);
+        break;
+    }
+    
+}
+
+mainApp.mainMenu();
+
+//==========================
+// READ --> SELECT
+//==========================
+
 //==========================
 // CONNECTION TO DB
 // "action" variable calls the appropriate CRUD function in switch statment associated with the db connection
@@ -40,68 +99,3 @@ const connection = require("./db/connection");
 //         console.log(error);
 //     }
 // };
-
-
-//==========================
-// DATABASE CRUD FUNCTIONS
-//==========================
-const readEmployees = async (connection) => {
-    const [rows, fields] = await connection.query("Select * FROM employee");
-    console.table(rows);
-};
-
-const readRoles = async (connection) => {
-    const [rows, fields] = await connection.query("Select * FROM u_role");
-    console.table(rows);
-}
-
-const readDepartments = async (connection) => {
-    const [rows, fields] = await connection.query("SELECT * FROM department");
-    console.table(rows);
-}
-
-// connectToDatabase();  //used if inquirer is not initiating a call
-
-//==========================
-// Initial Greeting - inquire choices
-//==========================
-// inquirer.prompt([
-//     {
-//       type: "list",
-//       message: "What would you like to do?",
-//       name: "homeChoice",
-//       choices: [
-//           "View Employees",
-//           "View Roles",
-//           "View Departments"
-//       ]
-//     }
-// ]).then(function(userResponse){
-//     // console.log(userResponse);
-//     userChoice(userResponse);
-//     // connectToDatabase();
-// });
-
-
-//==========================
-// Switch options for Initial Greeting
-//==========================
-// const userChoice = function(userResponse){
-//     switch(userResponse.homeChoice){
-//         case "View Employees": 
-//         connectToDatabase("readEmployees"); 
-//         break;
-
-//         case "View Roles": 
-//         connectToDatabase("readRoles"); 
-//         break;
-
-//         case "View Departments": 
-//         connectToDatabase("readDepartments"); 
-//         break;
-//     }
-// }
-
-//==========================
-// READ --> SELECT
-//==========================
