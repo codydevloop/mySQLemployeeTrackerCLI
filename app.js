@@ -3,18 +3,18 @@ const inquirer = require("inquirer");
 // const cTable = require("console.table");
 const connection = require("./db/connection");
 const FUNCTIONS = require("./db/dbqueries");
-const mainApp = require("./app");
+const mainApp = require("./app"); // needed after i added exports mainMenu
+// FUNCTIONS.readEmployees(connection);  //figuring out i needed to pass the connection was tricky (otherwise sync issue)
 
 // console.log(`Calling the exported function..the result ${FUNCTIONS.sendDataToDB()}`);
 // FUNCTIONS.readEmployees();
 
-// FUNCTIONS.readEmployees(connection);  //figuring out i needed to pass the connection was tricky
 
 
 //==========================
-// Initial Greeting - inquire choices
+// Main Menue - inquire choices
 //==========================
-exports.mainMenu= function(){
+exports.mainMenu = ()=> {
 
     inquirer.prompt([
         {
@@ -24,7 +24,8 @@ exports.mainMenu= function(){
         choices: [
             "View Employees",
             "View Roles",
-            "View Departments"
+            "View Departments",
+            "Add Department"
         ]
         }
     ]).then(function(userResponse){
@@ -38,9 +39,9 @@ exports.mainMenu= function(){
 
 
 //==========================
-// Switch options for Initial Greeting
+// Switch options for Main Menu
 //==========================
-const userChoice = function(userResponse){
+const userChoice = userResponse => {
     switch(userResponse.homeChoice){
         case "View Employees": 
         FUNCTIONS.readEmployees(connection);
@@ -53,11 +54,35 @@ const userChoice = function(userResponse){
         case "View Departments": 
         FUNCTIONS.readDepartments(connection);
         break;
-    }
-    
+
+        case "Add Department": 
+        // FUNCTIONS.addDepartment(connection);
+        addDepartment();
+        break;   
+    } 
 }
 
-mainApp.mainMenu();
+//==========================
+// **Add Department - inquirer question set
+//==========================
+const addDepartment = () => {
+
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "newDepartmentName",
+            message: "Please enter a name for the new Department"
+        }
+
+    ]).then(function(userResponse){
+        // i want to send the parameter to the next function
+        // console.log(userResponse.newDepartmentName);
+        FUNCTIONS.addDepartment(connection, userResponse);        
+    });
+};
+
+
+this.mainMenu();
 
 //==========================
 // READ --> SELECT

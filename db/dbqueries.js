@@ -29,6 +29,23 @@ exports.readDepartments = async (connection) => {
     mainApp.mainMenu();
 }
 
+exports.addDepartment = async (connection, userResponse) => {
+    const params = {name: userResponse.newDepartmentName};
+    //target name column of the table selected below
+    //associate the value in user input
+
+    //future example for multiple parameters  userInput.name
+
+
+
+    const rows = await connection.query("INSERT INTO department SET ?", params);
+    // tell user row was added 
+    console.log(`Department added ${rows.insertId}`);
+    // display all departments
+    this.readDepartments(connection)
+};
+
+
 
 // const readEmployees = async (connection) => {
 //     const [rows, fields] = await connection.query("Select * FROM employee");
