@@ -1,44 +1,45 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql2/promise");
+const mysql = require("mysql");
 const cTable = require("console.table");
+const connection = require("./db/connection");
 
-let connection;
+// let connection;
 //==========================
 // CONNECTION TO DB
 // "action" variable calls the appropriate CRUD function in switch statment associated with the db connection
 //==========================
 
-const connectToDatabase = async (action) => {
-    try{
-        connection = await mysql.createConnection({
-            host: "localhost",
-            port: 3306,
-            user: "root",
-            password: "password",
-            database: "all_employees"
-        });
-        console.log(`Connected to database with id ${connection.threadId}`);
-        //what action
-            console.log(action);
-            switch(action){
-                case "readEmployees": 
-                await readEmployees(connection); 
-                break;
+// const connectToDatabase = async (action) => {
+//     try{
+//         connection = await mysql.createConnection({
+//             host: "localhost",
+//             port: 3306,
+//             user: "root",
+//             password: "password",
+//             database: "all_employees"
+//         });
+//         console.log(`Connected to database with id ${connection.threadId}`);
+//         //what action
+//             console.log(action);
+//             switch(action){
+//                 case "readEmployees": 
+//                 await readEmployees(connection); 
+//                 break;
         
-                case "readRoles": 
-                await readRoles(connection); 
-                break;
+//                 case "readRoles": 
+//                 await readRoles(connection); 
+//                 break;
         
-                case "readDepartments": 
-                readDepartments(connection); 
-                break;
-            }
+//                 case "readDepartments": 
+//                 readDepartments(connection); 
+//                 break;
+//             }
         
-        connection.end;
-    }catch (error){
-        console.log(error);
-    }
-};
+//         connection.end;
+//     }catch (error){
+//         console.log(error);
+//     }
+// };
 
 
 //==========================
@@ -64,42 +65,42 @@ const readDepartments = async (connection) => {
 //==========================
 // Initial Greeting - inquire choices
 //==========================
-inquirer.prompt([
-    {
-      type: "list",
-      message: "What would you like to do?",
-      name: "homeChoice",
-      choices: [
-          "View Employees",
-          "View Roles",
-          "View Departments"
-      ]
-    }
-]).then(function(userResponse){
-    // console.log(userResponse);
-    userChoice(userResponse);
-    // connectToDatabase();
-});
+// inquirer.prompt([
+//     {
+//       type: "list",
+//       message: "What would you like to do?",
+//       name: "homeChoice",
+//       choices: [
+//           "View Employees",
+//           "View Roles",
+//           "View Departments"
+//       ]
+//     }
+// ]).then(function(userResponse){
+//     // console.log(userResponse);
+//     userChoice(userResponse);
+//     // connectToDatabase();
+// });
 
 
 //==========================
 // Switch options for Initial Greeting
 //==========================
-const userChoice = function(userResponse){
-    switch(userResponse.homeChoice){
-        case "View Employees": 
-        connectToDatabase("readEmployees"); 
-        break;
+// const userChoice = function(userResponse){
+//     switch(userResponse.homeChoice){
+//         case "View Employees": 
+//         connectToDatabase("readEmployees"); 
+//         break;
 
-        case "View Roles": 
-        connectToDatabase("readRoles"); 
-        break;
+//         case "View Roles": 
+//         connectToDatabase("readRoles"); 
+//         break;
 
-        case "View Departments": 
-        connectToDatabase("readDepartments"); 
-        break;
-    }
-}
+//         case "View Departments": 
+//         connectToDatabase("readDepartments"); 
+//         break;
+//     }
+// }
 
 //==========================
 // READ --> SELECT

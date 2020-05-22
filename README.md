@@ -1,5 +1,5 @@
 inquirer
-mysql2
+mysql
 console.table
 
 
