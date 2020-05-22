@@ -3,12 +3,11 @@ const inquirer = require("inquirer");
 // const cTable = require("console.table");
 const connection = require("./db/connection");
 const FUNCTIONS = require("./db/dbqueries");
-const mainApp = require("./app"); // needed after i added exports mainMenu
+// const mainApp = require("./app"); // needed after i added exports mainMenu
 // FUNCTIONS.readEmployees(connection);  //figuring out i needed to pass the connection was tricky (otherwise sync issue)
 
 // console.log(`Calling the exported function..the result ${FUNCTIONS.sendDataToDB()}`);
 // FUNCTIONS.readEmployees();
-
 
 
 //==========================
@@ -25,7 +24,8 @@ exports.mainMenu = ()=> {
             "View Employees",
             "View Roles",
             "View Departments",
-            "Add Department"
+            "Add New Department",
+            "Add New Roll"
         ]
         }
     ]).then(function(userResponse){
@@ -55,10 +55,17 @@ const userChoice = userResponse => {
         FUNCTIONS.readDepartments(connection);
         break;
 
-        case "Add Department": 
-        // FUNCTIONS.addDepartment(connection);
+        case "Add New Department": 
         addDepartment();
-        break;   
+        // FUNCTIONS.addDepartment(connection);
+        // call inquire function first, it will call the query
+        break;
+        
+        case "Add New Roll": 
+        FUNCTIONS.readDepartmentsNoDisplay(connection);
+        // addRole();
+        //calling query function first, it will call the inquire
+        break;  
     } 
 }
 
@@ -80,6 +87,66 @@ const addDepartment = () => {
         FUNCTIONS.addDepartment(connection, userResponse);        
     });
 };
+
+
+//==========================
+// **Add Role- inquirer question set
+// 
+//==========================
+exports.addRole = (departmentRoles) => {    
+
+    // gets list of deptRoles to dynamically populate the inquirer list
+    let deptNameArr =[];
+    for(let i=0; i<departmentRoles.length; i++){
+        deptNameArr.push(departmentRoles[i].name);
+    }
+
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Please enter a Tilte for the new Role"
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "Please enter a Salary for the new Role"
+        },
+        {
+            type: "list",
+            message: "Which Department should I assign this Roll to?",
+            name: "departmentId",
+            choices: deptNameArr
+        }
+
+    ]).then(function(userResponse){
+
+        // i want to send the parameter to the next function
+        // console.log(userResponse.newDepartmentName);
+        for(let i=0; i<departmentRoles.length; i++) {   
+            
+            if(departmentRoles[i].name === userResponse.departmentId) {
+                // console.log(`Before: ${userResponse.departmentId}`);
+                // console.log(`After: ${userResponse.departmentId}`)
+                userResponse.departmentId = departmentRoles[i].id;
+            }
+            
+        }
+        FUNCTIONS.addRole(connection, userResponse);   
+        // i want to send the parameter to the next function
+        // console.log(userResponse.newDepartmentName);
+        // console.log("we got this far");
+        // console.log(rows);
+        // FUNCTIONS.addRole(connection, userResponse);        
+    });
+    
+};
+    
+    
+
+
+    // console.log(departmentArray());
+
 
 
 this.mainMenu();
