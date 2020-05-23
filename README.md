@@ -2,6 +2,9 @@ inquirer
 mysql
 console.table
 https://www.sitepoint.com/understanding-module-exports-exports-node-js/
+modularization
+
+seperated sql connection, squl queries, Class for Employee
 
 
 

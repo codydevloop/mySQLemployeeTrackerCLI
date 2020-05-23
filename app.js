@@ -11,21 +11,22 @@ const FUNCTIONS = require("./db/dbqueries");
 
 
 //==========================
-// Main Menue - inquire choices
+// Main Menu - inquire choices
 //==========================
 exports.mainMenu = ()=> {
 
     inquirer.prompt([
         {
         type: "list",
-        message: "What would you like to do?",
+        message: "What would you like to do?\n",
         name: "homeChoice",
         choices: [
             "View Employees",
             "View Roles",
             "View Departments",
             "Add New Department",
-            "Add New Roll"
+            "Add New Roll",
+            "Add New Employee"
         ]
         }
     ]).then(function(userResponse){
@@ -34,9 +35,6 @@ exports.mainMenu = ()=> {
         // connectToDatabase();
     });
 };
-
-
-
 
 //==========================
 // Switch options for Main Menu
@@ -66,6 +64,11 @@ const userChoice = userResponse => {
         // addRole();
         //calling query function first, it will call the inquire
         break;  
+
+        case "Add New Employee": 
+        FUNCTIONS.readRoleAndManger(connection);
+        //calling query function first, it will call the inquire
+        break; 
     } 
 }
 
@@ -91,9 +94,8 @@ const addDepartment = () => {
 
 //==========================
 // **Add Role- inquirer question set
-// 
 //==========================
-exports.addRole = (departmentRoles) => {    
+exports.addRoleINQ = (departmentRoles) => {    
 
     // gets list of deptRoles to dynamically populate the inquirer list
     let deptNameArr =[];
@@ -105,7 +107,7 @@ exports.addRole = (departmentRoles) => {
         {
             type: "input",
             name: "title",
-            message: "Please enter a Tilte for the new Role"
+            message: "Please enter a Title for the new Role"
         },
         {
             type: "input",
@@ -121,8 +123,6 @@ exports.addRole = (departmentRoles) => {
 
     ]).then(function(userResponse){
 
-        // i want to send the parameter to the next function
-        // console.log(userResponse.newDepartmentName);
         for(let i=0; i<departmentRoles.length; i++) {   
             
             if(departmentRoles[i].name === userResponse.departmentId) {
@@ -130,64 +130,80 @@ exports.addRole = (departmentRoles) => {
                 // console.log(`After: ${userResponse.departmentId}`)
                 userResponse.departmentId = departmentRoles[i].id;
             }
-            
         }
-        FUNCTIONS.addRole(connection, userResponse);   
-        // i want to send the parameter to the next function
-        // console.log(userResponse.newDepartmentName);
-        // console.log("we got this far");
-        // console.log(rows);
-        // FUNCTIONS.addRole(connection, userResponse);        
+        FUNCTIONS.addRoleDB(connection, userResponse);       
     });
     
 };
+
+//==========================
+// **Add Employee inquirer question set
+//==========================
+exports.addEmployeeINQ = (roleOptions, managerOptions) => {    
+    let roleOptionsArr =[];
+    let managerOptionsArr = [];
+
+    // console.log(roleOptions);
+    // console.log(managerOptions);
+
+    for(let i=0; i<roleOptions.length; i++){
+        if(roleOptions[i].title !== null){
+        roleOptionsArr.push(roleOptions[i].title);
+        // console.log(roleOptions);
+        }
+    }  
+    for(let i=0; i<managerOptions.length; i++){
+        managerOptionsArr.push(`${managerOptions[i].first_name} ${managerOptions[i].last_name}`);
+    }  
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "first_name",
+            message: "Please enter a Employee First Name"
+        },
+        {
+            type: "input",
+            name: "last_name",
+            message: "Please enter a Employee Last Name"
+        },
+        {
+            type: "list",
+            message: "Which Role should the new user be assigned to?",
+            name: "role_id",
+            choices: roleOptionsArr
+        },
+        {
+            type: "list",
+            message: "Which Manager should the new User be assigned to?",
+            name: "manager_id",
+            choices: managerOptionsArr
+        }
+
+    ]).then(function(userResponse){
+
+        // sending back the role id
+        for(let i=0; i<roleOptions.length; i++) {   
+
+            if(roleOptions[i].title === userResponse.role_id) {
+                userResponse.role_id = roleOptions[i].id;
+            }
+        }
+
+        // sending back the manager employee id
+        for(let i = 0; i<managerOptions.length;i++){
+            if(userResponse.manager_id === (`${managerOptions[i].first_name} ${managerOptions[i].last_name}`)){
+                userResponse.manager_id = managerOptions[i].id;
+            }
+        }
+        FUNCTIONS.addEmployeeDB(connection, userResponse); 
     
+    });
     
-
-
-    // console.log(departmentArray());
-
+};
 
 
 this.mainMenu();
+    
 
-//==========================
-// READ --> SELECT
-//==========================
 
-//==========================
-// CONNECTION TO DB
-// "action" variable calls the appropriate CRUD function in switch statment associated with the db connection
-//==========================
 
-// const connectToDatabase = async (action) => {
-//     try{
-//         connection = await mysql.createConnection({
-//             host: "localhost",
-//             port: 3306,
-//             user: "root",
-//             password: "password",
-//             database: "all_employees"
-//         });
-//         console.log(`Connected to database with id ${connection.threadId}`);
-//         //what action
-//             console.log(action);
-//             switch(action){
-//                 case "readEmployees": 
-//                 await readEmployees(connection); 
-//                 break;
-        
-//                 case "readRoles": 
-//                 await readRoles(connection); 
-//                 break;
-        
-//                 case "readDepartments": 
-//                 readDepartments(connection); 
-//                 break;
-//             }
-        
-//         connection.end;
-//     }catch (error){
-//         console.log(error);
-//     }
-// };
