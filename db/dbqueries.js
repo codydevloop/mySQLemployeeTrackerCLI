@@ -5,6 +5,7 @@ const mysql = require("mysql");
 const cTable = require("console.table");
 const mainApp = require("../app");
 const chalk = require('chalk');
+const inquirer = require("inquirer");
 
 const log = console.log;
 
@@ -12,6 +13,23 @@ const log = console.log;
 // DATABASE CRUD FUNCTIONS
 //==========================
 //mainApp.mainMenu();
+
+//==========================
+// **ENTER to continue - assists viewing displayed Tables by not also displyaing the Main Menu options
+// plus....i was not able to call mainMenu from inside this function when i had it n the app.js file 
+//==========================
+const pressEnterToContinue = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "anykey",
+            message: "Press ENTER to continue"
+        }
+    ]).then(function(userResponse){ 
+        mainApp.mainMenu();
+    });
+
+}
 
 exports.readEmployees = async (connection) => {
     const rows = await connection.query(`
@@ -30,13 +48,17 @@ exports.readEmployees = async (connection) => {
     console.table(rows);
     console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
     // console.table('*EMPLOYEES*',rows);
-    mainApp.mainMenu();
+    // mainApp.mainMenu();
+    pressEnterToContinue();
 }
 
 exports.readRoles = async (connection) => {
     const rows = await connection.query("Select * FROM u_role");
+
+    console.table(log(chalk.greenBright("----------------------------------------   table START  --------------------------------------  \n")));
     console.table(rows);
-    mainApp.mainMenu();
+    console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
+    pressEnterToContinue();
 }
 
 exports.readRolesNoDisplay = async (connection) => {
@@ -56,8 +78,11 @@ exports.readRoleAndManger = async (connection) => {
 
 exports.readDepartments = async (connection) => {
     const rows = await connection.query("SELECT * FROM department");
+
+    console.table(log(chalk.greenBright("----------------------------------------   table START  --------------------------------------  \n")));
     console.table(rows);
-    mainApp.mainMenu();
+    console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
+    pressEnterToContinue();
 }
 
 exports.readDepartmentsNoDisplay = async (connection) => {
@@ -68,7 +93,7 @@ exports.readDepartmentsNoDisplay = async (connection) => {
     // mainApp.mainMenu();
 }
 
-exports.addDepartment = async (connection, userResponse) => {
+exports.addDepartmentDB = async (connection, userResponse) => {
     const params = {name: userResponse.newDepartmentName};
     //target name column of the table selected below
     //associate the value in user input

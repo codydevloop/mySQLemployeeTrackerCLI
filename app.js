@@ -1,8 +1,8 @@
 const inquirer = require("inquirer");
-// const mysql = require("mysql");
-// const cTable = require("console.table");
 const connection = require("./db/connection");
 const FUNCTIONS = require("./db/dbqueries");
+// const mysql = require("mysql");
+// const cTable = require("console.table");
 // const mainApp = require("./app"); // needed after i added exports mainMenu
 // FUNCTIONS.readEmployees(connection);  //figuring out i needed to pass the connection was tricky (otherwise sync issue)
 
@@ -54,7 +54,7 @@ const userChoice = userResponse => {
         break;
 
         case "Add New Department": 
-        addDepartment();
+        addDepartmentINQ();
         // FUNCTIONS.addDepartment(connection);
         // call inquire function first, it will call the query
         break;
@@ -75,7 +75,7 @@ const userChoice = userResponse => {
 //==========================
 // **Add Department - inquirer question set
 //==========================
-const addDepartment = () => {
+const addDepartmentINQ = () => {
 
     inquirer.prompt([
         {
@@ -87,7 +87,7 @@ const addDepartment = () => {
     ]).then(function(userResponse){
         // i want to send the parameter to the next function
         // console.log(userResponse.newDepartmentName);
-        FUNCTIONS.addDepartment(connection, userResponse);        
+        FUNCTIONS.addDepartmentDB(connection, userResponse);        
     });
 };
 
