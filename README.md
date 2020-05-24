@@ -16,6 +16,9 @@ modularization
 
 seperated sql connection, sql queries, Class for Employee
 
+- how to access mainMain from inside a function in app.js
+- 
+
 
 
 

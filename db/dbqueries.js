@@ -44,20 +44,28 @@ exports.readEmployees = async (connection) => {
     INNER JOIN u_role ON e.manager_id=u_role.id
     `);
 
-    console.table(log(chalk.greenBright("----------------------------------------   table START  --------------------------------------  \n")));
+    console.table(log(chalk.greenBright("------------------------------------------------------------------------------   table START    \n")));
     console.table(rows);
-    console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
+    console.table(log(chalk.greenBright("--------------------------------------------------------------------------------   table END    ")));
     // console.table('*EMPLOYEES*',rows);
     // mainApp.mainMenu();
     pressEnterToContinue();
 }
 
 exports.readRoles = async (connection) => {
-    const rows = await connection.query("Select * FROM u_role");
+    const rows = await connection.query(`
+    Select r.title AS 'Title',
+	r.id AS 'Role Id',
+	d.name AS 'Department Name',
+    r.department_id,
+    r.salary AS 'Salary'
+    FROM u_role r
+    INNER JOIN department d ON r.department_id=d.id
+    `);
 
-    console.table(log(chalk.greenBright("----------------------------------------   table START  --------------------------------------  \n")));
+    console.table(log(chalk.greenBright("------------------------------------------------------------------------------   table START    \n")));
     console.table(rows);
-    console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
+    console.table(log(chalk.greenBright("--------------------------------------------------------------------------------   table END    ")));
     pressEnterToContinue();
 }
 
@@ -77,11 +85,13 @@ exports.readRoleAndManger = async (connection) => {
 }
 
 exports.readDepartments = async (connection) => {
-    const rows = await connection.query("SELECT * FROM department");
+    const rows = await connection.query(`SELECT d.name AS 'Department Name',
+    d.id AS 'Department Id'
+    FROM department d`);
 
-    console.table(log(chalk.greenBright("----------------------------------------   table START  --------------------------------------  \n")));
+    console.table(log(chalk.greenBright("------------------------------------------------------------------------------   table START    \n")));
     console.table(rows);
-    console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
+    console.table(log(chalk.greenBright("--------------------------------------------------------------------------------   table END    ")));
     pressEnterToContinue();
 }
 
