@@ -4,6 +4,9 @@ const connection = require("./connection");
 const mysql = require("mysql");
 const cTable = require("console.table");
 const mainApp = require("../app");
+const chalk = require('chalk');
+
+const log = console.log;
 
 //==========================
 // DATABASE CRUD FUNCTIONS
@@ -11,8 +14,22 @@ const mainApp = require("../app");
 //mainApp.mainMenu();
 
 exports.readEmployees = async (connection) => {
-    const rows = await connection.query("Select * FROM employee");
+    const rows = await connection.query(`
+    SELECT 	CONCAT(e.first_name,' ',e.last_name) AS 'Employee',
+        e.id AS "Employee Id",
+        u_role.title AS 'Role Title',
+        e.role_id AS 'Role Id',
+    CONCAT(m.first_name,' ',m.last_name) AS 'Employee Manager',	
+        e.manager_id AS 'Manger Id'
+    FROM employee m
+    INNER JOIN employee e ON m.id=e.manager_id
+    INNER JOIN u_role ON e.manager_id=u_role.id
+    `);
+
+    console.table(log(chalk.greenBright("----------------------------------------   table START  --------------------------------------  \n")));
     console.table(rows);
+    console.table(log(chalk.greenBright("----------------------------------------   table END  ----------------------------------------  ")));
+    // console.table('*EMPLOYEES*',rows);
     mainApp.mainMenu();
 }
 

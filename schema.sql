@@ -5,7 +5,7 @@ CREATE DATABASE all_employees;
 USE all_employees;
 -- CREATE department
 CREATE TABLE department (
-id INTEGER AUTO_INCREMENT NOT NULL,
+id INTEGER(3) AUTO_INCREMENT NOT NULL,
 name VARCHAR(30),
 PRIMARY KEY(id)
 );
@@ -19,10 +19,10 @@ VALUES ("Information Technology"),("Human Resources"),
  
 -- CREATE u_role
 CREATE TABLE u_role (
-id INTEGER AUTO_INCREMENT NOT NULL,
+id INTEGER(3) AUTO_INCREMENT NOT NULL,
 title VARCHAR(30),
 salary DECIMAL (10,2),
-department_id INTEGER,
+department_id INTEGER(3),
 PRIMARY KEY(id)
 );
 
@@ -39,18 +39,24 @@ CREATE TABLE employee (
 id INTEGER AUTO_INCREMENT NOT NULL,
 first_name VARCHAR(30),
 last_name VARCHAR(30),
-role_id INTEGER,
-manager_id INTEGER,
+role_id INTEGER(3),
+manager_id INTEGER(3),
 PRIMARY KEY(id)
 );
 
  -- SEED employee
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Danny", "Ocean", 1, 100),("Basher", "Tarr", 2, 100),
-("Terry", "Benedict", 4, 200),("Linus","Caldwell",5 , 100),
-("Reuben", "Tishkoff", 2, 100),("Livingston","Dell",3,100);
+VALUES ("Danny", "Ocean", 1, 1),("Basher", "Tarr", 2, 1),
+("Terry", "Benedict", 4, 3),("Linus","Caldwell",5 , 1),
+("Reuben", "Tishkoff", 2, 3),("Livingston","Dell",3,1);
+
+UPDATE employee
+SET manager_id = 1
+WHERE id = 5;
 
 SELECT * FROM employee;
+
+
 
  
 

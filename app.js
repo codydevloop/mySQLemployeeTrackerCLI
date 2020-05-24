@@ -17,7 +17,7 @@ exports.mainMenu = ()=> {
 
     inquirer.prompt([
         {
-        type: "list",
+        type: "rawlist",
         message: "What would you like to do?\n",
         name: "homeChoice",
         choices: [
@@ -143,7 +143,7 @@ exports.addEmployeeINQ = (roleOptions, managerOptions) => {
     let roleOptionsArr =[];
     let managerOptionsArr = [];
 
-    // console.log(roleOptions);
+    //console.log(roleOptions);
     // console.log(managerOptions);
 
     for(let i=0; i<roleOptions.length; i++){

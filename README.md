@@ -1,10 +1,20 @@
 inquirer
 mysql
 console.table
+chalk
+
 https://www.sitepoint.com/understanding-module-exports-exports-node-js/
+https://www.npmjs.com/package/console.table\
+
+
+https://www.sqlshack.com/sql-multiple-joins-for-beginners-with-examples/
+
+https://www.mysqltutorial.org/mysql-self-join/
+
+
 modularization
 
-seperated sql connection, squl queries, Class for Employee
+seperated sql connection, sql queries, Class for Employee
 
 
 

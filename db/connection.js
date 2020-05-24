@@ -1,6 +1,8 @@
 const mysql = require("mysql");
 const util = require("util");
+const chalk = require('chalk');
 
+const log = console.log;
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -15,7 +17,7 @@ connection.connect(function (error) {
         throw error;
     }
 
-    console.log(`Connected to database as id ${connection.threadId}`);
+  log(chalk.cyan(`\nConnected to database as id ${connection.threadId}`));
 });
 
 connection.query = util.promisify(connection.query);
