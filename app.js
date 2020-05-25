@@ -1,32 +1,34 @@
 const inquirer = require("inquirer");
 const connection = require("./db/connection");
 const FUNCTIONS = require("./db/dbqueries");
+
 // const mysql = require("mysql");
 // const cTable = require("console.table");
 // const mainApp = require("./app"); // needed after i added exports mainMenu
 // FUNCTIONS.readEmployees(connection);  //figuring out i needed to pass the connection was tricky (otherwise sync issue)
+const chalk = require('chalk');
 
-// console.log(`Calling the exported function..the result ${FUNCTIONS.sendDataToDB()}`);
-// FUNCTIONS.readEmployees();
+//##MIDDLEWARE
+const log = console.log;  //used for CHALK
 
 
 //==========================
-// Main Menu - inquire choices
+// Main Menu - inquirer
 //==========================
 exports.mainMenu = ()=> {
-
     inquirer.prompt([
         {
-        type: "rawlist",
-        message: "What would you like to do?\n",
+        type: "list",
+        message: "\n    MAIN MENU    \n*****************",
         name: "homeChoice",
         choices: [
-            "View Employees",
-            "View Roles",
-            "View Departments",
-            "Add New Department",
-            "Add New Roll",
-            "Add New Employee"
+            "VIEW Employees",
+            "VIEW Roles",
+            "VIEW Departments",
+            "ADD New Employee",
+            "ADD New Role",
+            "ADD New Department",
+            "UPDATE Employee Role"
         ]
         }
     ]).then(function(userResponse){
@@ -37,107 +39,46 @@ exports.mainMenu = ()=> {
 };
 
 //==========================
-// Switch options for Main Menu
+// Switch for Main Menue
 //==========================
 const userChoice = userResponse => {
     switch(userResponse.homeChoice){
-        case "View Employees": 
+        case "VIEW Employees": 
         FUNCTIONS.readEmployees(connection);
         break;
 
-        case "View Roles": 
+        case "VIEW Roles": 
         FUNCTIONS.readRoles(connection);
         break;
 
-        case "View Departments": 
+        case "VIEW Departments": 
         FUNCTIONS.readDepartments(connection);
         break;
 
-        case "Add New Department": 
+        case "ADD New Department": 
         addDepartmentINQ();
-        // FUNCTIONS.addDepartment(connection);
-        // call inquire function first, it will call the query
         break;
         
-        case "Add New Roll": 
+        case "ADD New Role": 
         FUNCTIONS.readDepartmentsNoDisplay(connection);
-        // addRole();
-        //calling query function first, it will call the inquire
+        //calling sql first to populate inquirer choieces for question
+        //Which dept should you assign this roll to
         break;  
 
-        case "Add New Employee": 
+        case "ADD New Employee": 
         FUNCTIONS.readRoleAndManger(connection);
-        //calling query function first, it will call the inquire
+        break; 
+
+        case "UPDATE Employee Role": 
+        FUNCTIONS.readEmpAndRole(connection);
+
+        
         break; 
     } 
 }
 
 //==========================
-// **Add Department - inquirer question set
-//==========================
-const addDepartmentINQ = () => {
-
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "newDepartmentName",
-            message: "Please enter a name for the new Department"
-        }
-
-    ]).then(function(userResponse){
-        // i want to send the parameter to the next function
-        // console.log(userResponse.newDepartmentName);
-        FUNCTIONS.addDepartmentDB(connection, userResponse);        
-    });
-};
-
-
-//==========================
-// **Add Role- inquirer question set
-//==========================
-exports.addRoleINQ = (departmentRoles) => {    
-
-    // gets list of deptRoles to dynamically populate the inquirer list
-    let deptNameArr =[];
-    for(let i=0; i<departmentRoles.length; i++){
-        deptNameArr.push(departmentRoles[i].name);
-    }
-
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "title",
-            message: "Please enter a Title for the new Role"
-        },
-        {
-            type: "input",
-            name: "salary",
-            message: "Please enter a Salary for the new Role"
-        },
-        {
-            type: "list",
-            message: "Which Department should I assign this Roll to?",
-            name: "departmentId",
-            choices: deptNameArr
-        }
-
-    ]).then(function(userResponse){
-
-        for(let i=0; i<departmentRoles.length; i++) {   
-            
-            if(departmentRoles[i].name === userResponse.departmentId) {
-                // console.log(`Before: ${userResponse.departmentId}`);
-                // console.log(`After: ${userResponse.departmentId}`)
-                userResponse.departmentId = departmentRoles[i].id;
-            }
-        }
-        FUNCTIONS.addRoleDB(connection, userResponse);       
-    });
-    
-};
-
-//==========================
-// **Add Employee inquirer question set
+// **Add Employee inquirer 
 //==========================
 exports.addEmployeeINQ = (roleOptions, managerOptions) => {    
     let roleOptionsArr =[];
@@ -159,12 +100,12 @@ exports.addEmployeeINQ = (roleOptions, managerOptions) => {
         {
             type: "input",
             name: "first_name",
-            message: "Please enter a Employee First Name"
+            message: "Please enter a Employee FIRST NAME"
         },
         {
             type: "input",
             name: "last_name",
-            message: "Please enter a Employee Last Name"
+            message: "Please enter a Employee LAST NAME"
         },
         {
             type: "list",
@@ -200,6 +141,139 @@ exports.addEmployeeINQ = (roleOptions, managerOptions) => {
     });
     
 };
+
+//==========================
+// **Add Role- inquirer question set
+//==========================
+exports.addRoleINQ = (departmentRoles) => {    
+
+    // gets list of deptRoles to dynamically populate the inquirer list
+    let deptNameArr =[];
+    for(let i=0; i<departmentRoles.length; i++){
+        deptNameArr.push(departmentRoles[i].name);
+    }
+
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Please enter a Title for the new Role"
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "Please enter a Salary for the new Role $"
+        },
+        {
+            type: "list",
+            message: "Which Department should I assign this Role to?",
+            name: "departmentId",
+            choices: deptNameArr
+        }
+
+    ]).then(function(userResponse){
+
+        for(let i=0; i<departmentRoles.length; i++) {   
+            
+            if(departmentRoles[i].name === userResponse.departmentId) {
+                // console.log(`Before: ${userResponse.departmentId}`);
+                // console.log(`After: ${userResponse.departmentId}`)
+                userResponse.departmentId = departmentRoles[i].id;
+            }
+        }
+        FUNCTIONS.addRoleDB(connection, userResponse);       
+    });
+    
+};
+
+//==========================
+// **Add Department - inquirer question set
+//==========================
+const addDepartmentINQ = () => {
+    // attempt at using chalk to change font color of message
+    // let fontControl = `${log(chalk.red("Please enter a name for the new Department"))}`;
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "newDepartmentName",
+            message: "Please enter a name for the new Department"
+            // message: fontControl 
+        }
+    ]).then(function(userResponse){
+        FUNCTIONS.addDepartmentDB(connection, userResponse);        
+    });
+};
+
+//==========================
+// **Add Department - inquirer question set
+//==========================
+exports.updateEmpRole = (e,r) => {    
+    
+    let empNameList =[];  //collection to store choices
+    let userToBeUpdated; // the user, selected from inquirer list
+    let selectedUserInfo;  // the complete employee row of information for the selected user
+
+    //loop to pull list of user names
+    for(let i=0; i<e.length; i++){
+        empNameList.push(e[i].Employee);
+    }
+
+    inquirer.prompt([
+        {
+            type: "rawlist",
+            message: "Which User do you want to update?",
+            name: "user",
+            choices: empNameList
+        }
+    ]).then(function(userResponse){
+        userToBeUpdated = userResponse.user;
+        for (let i=0;i<e.length;i++){
+            if(userToBeUpdated === e[i].Employee){
+                selectedUserInfo = e[i];
+            }
+        }
+         
+    }).then(function(){
+
+        let roleChoiceOptions = [];
+        let currentSalAndRole = [];
+        let selectedRoleInfo = []; // the complete role row of infomation for the new assignment
+
+        for (let i=0;i<r.length; i++){
+            roleChoiceOptions.push(`Salary: $${r[i].salary} - Role: ${r[i].title}`);
+            
+            if(selectedUserInfo.Role_Id === r[i].id){
+                currentSalAndRole = roleChoiceOptions[i]; //var for display info below
+            }
+        }
+
+        log(chalk.yellow(userToBeUpdated)+" is currently making " + chalk.yellowBright(currentSalAndRole +"\n"));
+        
+        inquirer.prompt([
+            {
+                type: "rawlist",
+                message: "Select a new Role for the user",
+                name: "role",
+                choices: roleChoiceOptions
+            }
+        ]).then(function(userResponse){
+            let userString = userResponse.role.split("Role: ");
+            //console.log(userString[1]);
+            for(let i = 0; i<r.length; i++){
+                if (userString[1] === r[i].title){
+                    selectedRoleInfo = r[i];
+                }
+            }    
+            FUNCTIONS.updateEmpRole(connection, selectedUserInfo, selectedRoleInfo)
+        });
+        
+    });
+
+
+
+};
+
+
 
 
 this.mainMenu();

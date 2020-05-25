@@ -1,7 +1,9 @@
 inquirer
 mysql
 console.table
-chalk
+
+chalk  ** could not get it work with inquirer message OR console.table
+inquirer-chalk-pipe  **not used, looking for something that changes color of inquirer questions
 
 https://www.sitepoint.com/understanding-module-exports-exports-node-js/
 https://www.npmjs.com/package/console.table\
@@ -11,13 +13,20 @@ https://www.sqlshack.com/sql-multiple-joins-for-beginners-with-examples/
 
 https://www.mysqltutorial.org/mysql-self-join/
 
+https://github.com/LitoMore/inquirer-chalk-pipe/blob/master/example.js
+
 
 modularization
 
 seperated sql connection, sql queries, Class for Employee
 
 - how to access mainMain from inside a function in app.js
-- 
+- in "addDepartmentINQ" i toyed around with using CHALK to color 
+  my inquirer messaged.  It worked somewhat, each time i applied it
+  the word 'undefined' was also displayed.  **I would really like to get this working
+- catches
+- add default message to break
+- creating classes of functions, and associated constructors
 
 
 
