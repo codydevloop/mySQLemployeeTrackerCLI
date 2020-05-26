@@ -221,7 +221,7 @@ exports.updateEmpRole = (e,r) => {
     inquirer.prompt([
         {
             type: "rawlist",
-            message: "Which User do you want to update?",
+            message: "Which User do you want to update?\n",
             name: "user",
             choices: empNameList
         }
@@ -247,12 +247,12 @@ exports.updateEmpRole = (e,r) => {
             }
         }
 
-        log(chalk.yellow(userToBeUpdated)+" is currently making " + chalk.yellowBright(currentSalAndRole +"\n"));
+        log(chalk.yellow(userToBeUpdated)+chalk.red(" is currently making ") + chalk.yellowBright(currentSalAndRole +"\n"));
         
         inquirer.prompt([
             {
                 type: "rawlist",
-                message: "Select a new Role for the user",
+                message: `Select a new "Role" for "${userToBeUpdated}\n"`,
                 name: "role",
                 choices: roleChoiceOptions
             }
@@ -276,7 +276,7 @@ exports.updateEmpRole = (e,r) => {
 
 
 
-this.mainMenu();
+// this.mainMenu();
     
 
 

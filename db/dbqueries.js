@@ -6,8 +6,23 @@ const cTable = require("console.table");
 const mainApp = require("../app");
 const chalk = require('chalk');
 const inquirer = require("inquirer");
+const figlet = require('figlet');
 
-const log = console.log;
+//## MIDDLE WARE
+const log = console.log; //used for CHALK
+
+figlet('Hoover CLI', function(err, data) {
+    if (err) {
+        console.log('Something went wrong...');
+        console.dir(err);
+        return;
+    }
+    console.log(data);
+    pressEnterToContinue();
+
+});
+
+
 
 //==========================
 // DATABASE CRUD FUNCTIONS
@@ -30,7 +45,6 @@ const pressEnterToContinue = () => {
     });
 
 }
-
 
 //==========================
 // DISPLAY FUNCTIONS (each have the same four statements)
